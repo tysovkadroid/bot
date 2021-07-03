@@ -1,0 +1,24 @@
+[[source]]
+url = "https://pypi.python.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+DateTime = "*"
+Flask = "*"
+beautifulsoup4 = "*"
+emoji = "*"
+gunicorn = "*"
+psycopg2 = "*"
+pymorphy2 = "*"
+python-dateutil = "*"
+python-telegram-bot = "*"
+pytz = "*"
+requests = "*"
+tzlocal = "*"
+
+[dev-packages]
+flake8 = "*"
+
+[requires]
+python_version = "3.9.5"
