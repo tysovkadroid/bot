@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from bot.config import DEFAULT_MARKUP, END, CREATOR_MARKUP, CREATOR_ID
-from bot.msgs import msg_29, msg_30, msg_31, msg_32, msg_33
+from bot.msgs import msg_30, msg_31, msg_32, msg_33, msg_34
 from bot.sql.get import get_user, get_verified, get_switched, get_prompted
 from bot.sql.update import update_user, update_people
 from bot.tools.chat_check import chat_check
@@ -18,7 +18,7 @@ def cancel_msg(update, context):
     markup = CREATOR_MARKUP if user_id == CREATOR_ID else DEFAULT_MARKUP
     if step in ['people', 'time']:
         update_user('step', 'NULL', user_id)
-        bot.send_message(user_id, msg_29, reply_markup=markup)
+        bot.send_message(user_id, msg_30, reply_markup=markup)
     elif step in ['on', 'off']:
         verified_lst = get_verified()
         switched_lst = get_switched(user_id, True)
@@ -31,7 +31,7 @@ def cancel_msg(update, context):
                     if crossed_lst:
                         for userid in crossed_lst:
                             update_people(user_id, 'ignored', True, userid)
-                    bot.send_message(user_id, msg_31, reply_markup=markup)
+                    bot.send_message(user_id, msg_32, reply_markup=markup)
                 else:
                     now = datetime.now()
                     timesetting_time = time_left(
@@ -41,21 +41,21 @@ def cancel_msg(update, context):
                     if crossed_lst and timesetting_time:
                         for userid in crossed_lst:
                             update_people(user_id, 'ignored', False, userid)
-                        msg = msg_30.format(a=timesetting_time)
+                        msg = msg_31.format(a=timesetting_time)
                         bot.send_message(user_id, msg, reply_markup=markup)
                     else:
-                        bot.send_message(user_id, msg_29, reply_markup=markup)
+                        bot.send_message(user_id, msg_30, reply_markup=markup)
             else:
                 update_user('step', 'NULL', user_id)
-                bot.send_message(user_id, msg_32, reply_markup=markup)
+                bot.send_message(user_id, msg_33, reply_markup=markup)
         else:
             update_user('step', 'NULL', user_id)
-            bot.send_message(user_id, msg_33, reply_markup=markup)
+            bot.send_message(user_id, msg_34, reply_markup=markup)
     elif step == 'holiday':
         update_user('step', 'NULL', user_id)
-        bot.send_message(user_id, msg_29, reply_markup=markup)
+        bot.send_message(user_id, msg_30, reply_markup=markup)
     else:
         update_user('step', 'NULL', user_id)
-        bot.send_message(user_id, msg_33, reply_markup=markup)
+        bot.send_message(user_id, msg_34, reply_markup=markup)
     update_user('latest', "'now()'::TIMESTAMPTZ", user_id)
     return END

@@ -2,7 +2,7 @@ from telegram.utils.helpers import mention_markdown
 
 from bot.config import CREATOR_ID
 from bot.handlers.people import people_refresh
-from bot.msgs import msg_35
+from bot.msgs import msg_36
 from bot.sql.delete import delete_user
 from bot.sql.get import get_every, get_users, get_user
 from bot.tools.chat_check import chat_check
@@ -23,12 +23,12 @@ def left_msg(update, context):
                 username = get_user(userid)[1]
                 mention = mention_markdown(userid, username, version=2)
                 delete_user(userid)
-                message.reply_text(msg_35.format(a=', ' + mention))
+                message.reply_text(msg_36.format(a=', ' + mention))
                 people_refresh(context)
             else:
                 delete_user(userid)
-                message.reply_text(msg_35.format(a=''))
+                message.reply_text(msg_36.format(a=''))
         else:
-            message.reply_text(msg_35.format(a=''))
+            message.reply_text(msg_36.format(a=''))
     else:
         return 0

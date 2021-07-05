@@ -5,7 +5,7 @@ from telegram.utils.helpers import mention_markdown
 
 from bot.config import LOGGER, TIMEZONE, DEFAULT_TIMESETTING, TYSOVKA_ID, DEFAULT_MARKUP, \
                        CREATOR_MARKUP, CREATOR_ID
-from bot.msgs import msg_2, msg_10, msg_14
+from bot.msgs import msg_2, msg_11, msg_15
 from bot.msgs.emojis import greeting_emoji, birthday_emoji
 from bot.sql.get import get_users, get_table, get_birthday, get_verified, get_switched, \
                         get_prompted, get_ignored, get_holidays
@@ -102,7 +102,7 @@ def scheduler(context):
                             mentions, line, declension = mention_layout(user_id, birthday_lst)
                             greeting = msg_2.format(a=f', *{username}*', b=greeting_emoji()) + '\n'
                             msg = f"{greeting if time_passed(latest, '>=', 60) else ''}" + \
-                                f"{'напоминаю, что ' if repeated_lst else ''}" + msg_10.format(
+                                f"{'напоминаю, что ' if repeated_lst else ''}" + msg_11.format(
                                     a=mentions, b=line, c=declension, d=birthday_emoji())
                             bot.send_message(user_id, msg)
                             update_user('step', 'NULL', user_id)
@@ -119,8 +119,8 @@ def scheduler(context):
                 if time_passed(latest, '==', 5) and len(users_rows) > 1:
                     markup = CREATOR_MARKUP if user_id == CREATOR_ID else DEFAULT_MARKUP
                     if not get_table(user_id):
-                        bot.send_message(user_id, msg_14, reply_markup=markup)
+                        bot.send_message(user_id, msg_15, reply_markup=markup)
                     elif not get_switched(user_id, True):
-                        bot.send_message(user_id, msg_14, reply_markup=markup)
+                        bot.send_message(user_id, msg_15, reply_markup=markup)
     else:
         return None

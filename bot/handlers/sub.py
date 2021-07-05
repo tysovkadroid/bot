@@ -1,8 +1,8 @@
 from telegram import ForceReply
 
-from bot.config import DEFAULT_MARKUP, END, CREATOR_ID, CREATOR_MARKUP, GENDER_MARKUP, \
+from bot.config import DEFAULT_MARKUP, END, CREATOR_ID, CREATOR_MARKUP, SUB_GENDER_MARKUP, \
                        USERNAME_STORED, GENDER_STORED, BIRTHDAY_STORED
-from bot.msgs import msg_3, msg_5, msg_7, msg_15, msg_16
+from bot.msgs import msg_3, msg_6, msg_8, msg_16, msg_17
 from bot.sql.get import get_user
 from bot.sql.update import update_user
 from bot.tools.chat_check import chat_check
@@ -22,10 +22,10 @@ def sub_msg(update, context):
             bot.send_message(user_id, msg_3, reply_markup=ForceReply())
             return USERNAME_STORED
         elif not gender:
-            bot.send_message(user_id, msg_5, reply_markup=GENDER_MARKUP)
+            bot.send_message(user_id, msg_6, reply_markup=SUB_GENDER_MARKUP)
             return GENDER_STORED
         elif not birthday:
-            bot.send_message(user_id, msg_7, reply_markup=ForceReply())
+            bot.send_message(user_id, msg_8, reply_markup=ForceReply())
             return BIRTHDAY_STORED
     elif step == 'people':
         import bot.handlers.people as people
@@ -38,12 +38,12 @@ def sub_msg(update, context):
         update_user('substate', True, user_id)
         substate = db_user[7]
         if substate:
-            msg = msg_16.format(a=word)
+            msg = msg_17.format(a=word)
         else:
             verified, timesetting = db_user[6], db_user[8]
             if not verified:
                 update_user('verified', True, user_id)
-            msg = msg_15.format(a=word, b=timesetting)
+            msg = msg_16.format(a=word, b=timesetting)
         update_user('step', 'NULL', user_id)
         markup = CREATOR_MARKUP if user_id == CREATOR_ID else DEFAULT_MARKUP
         bot.send_message(user_id, msg, reply_markup=markup)

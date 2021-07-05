@@ -1,7 +1,7 @@
 from telegram import InlineKeyboardMarkup, InlineKeyboardButton
 
 from bot.config import HOLIDAY_ADDED, END
-from bot.msgs import msg_38, msg_37, msg_39, msg_40
+from bot.msgs import msg_39, msg_38, msg_40, msg_41
 from bot.sql.get import get_holidays
 from bot.sql.insert import insert_holiday
 from bot.sql.update import update_holidays
@@ -32,7 +32,7 @@ def holidays_msg(update, context):
     if any(holiday_rows):
         msg = holiday_layout(holiday_rows[0])
     else:
-        msg = msg_38
+        msg = msg_39
     button = [[InlineKeyboardButton(text='изменить', callback_data='h_btn')]]
     markup = InlineKeyboardMarkup(button)
     bot.send_message(user_id, msg, reply_markup=markup)
@@ -47,7 +47,7 @@ def holidays_cb(update, context):
     query = update.callback_query
     data = query['data']
     if data == 'h_btn':
-        bot.send_message(user_id, msg_37)
+        bot.send_message(user_id, msg_38)
         query.answer()
         return HOLIDAY_ADDED
     else:
@@ -97,11 +97,11 @@ def process_holiday(update, context):
                 data_subquery = f"""'{{"{date}":"{text}"}}'::jsonb"""
                 inserted = insert_holiday('data', data_subquery)
                 if not inserted:
-                    bot.send_message(user_id, msg_40.format(a=''), reply_markup=markup)
+                    bot.send_message(user_id, msg_41.format(a=''), reply_markup=markup)
                     return END
             holidays_msg(update, context)
         else:
-            bot.send_message(user_id, msg_40.format(a=string_escape('!\nневерный формат', '!')),
+            bot.send_message(user_id, msg_41.format(a=string_escape('!\nневерный формат', '!')),
                              reply_markup=markup)
     else:
         if datetime_check(txt, '%d.%m'):
@@ -111,8 +111,8 @@ def process_holiday(update, context):
                 update_holidays('data', data_subquery)
                 holidays_msg(update, context)
             else:
-                bot.send_message(user_id, msg_39.format(a=txt), reply_markup=markup)
+                bot.send_message(user_id, msg_40.format(a=txt), reply_markup=markup)
         else:
-            bot.send_message(user_id, msg_40.format(a=string_escape('!\nневерный формат', '!')),
+            bot.send_message(user_id, msg_41.format(a=string_escape('!\nневерный формат', '!')),
                              reply_markup=markup)
     return END

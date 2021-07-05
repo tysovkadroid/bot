@@ -5,7 +5,7 @@ from telegram import InlineKeyboardMarkup, InlineKeyboardButton, ForceReply
 from bot.config import TIMEZONE, DEFAULT_MARKUP, OPTIONS_MARKUP, TIME_ENTERED, TIME_REPEATED, \
                        CREATOR_ID, CREATOR_MARKUP, END
 from bot.handlers.scheduler import mention_layout
-from bot.msgs import msg_6, msg_8, msg_19, msg_20, msg_21, msg_22, msg_23, msg_24, msg_25
+from bot.msgs import msg_7, msg_9, msg_20, msg_21, msg_22, msg_23, msg_24, msg_25, msg_26
 from bot.msgs.emojis import emoji_10, emoji_13, emoji_21
 from bot.sql.get import get_user, get_table, get_birthday, get_switched, get_prompted
 from bot.sql.update import update_user, update_people
@@ -25,18 +25,18 @@ def time_msg(update, context):
         update_user('step', 'NULL', user_id)
         timesetting = get_user(user_id)[8]
         if timesetting == '00:00':
-            timesetting_type = msg_21.format(a=timesetting)
-        else:
             timesetting_type = msg_22.format(a=timesetting)
+        else:
+            timesetting_type = msg_23.format(a=timesetting)
         clock_emoji = time_emoji(timesetting)
-        msg = msg_23.format(a=timesetting_type, b=clock_emoji)
+        msg = msg_24.format(a=timesetting_type, b=clock_emoji)
         button = [[InlineKeyboardButton(text='изменить время', callback_data='t_btn')]]
         markup = InlineKeyboardMarkup(button)
         bot.send_message(user_id, msg, reply_markup=markup)
     else:
         update_user('step', "'time'", user_id)
         markup = CREATOR_MARKUP if user_id == CREATOR_ID else DEFAULT_MARKUP
-        bot.send_message(user_id, msg_20, reply_markup=markup)
+        bot.send_message(user_id, msg_21, reply_markup=markup)
     update_user('latest', "'now()'::TIMESTAMPTZ", user_id)
     return END
 
@@ -55,14 +55,14 @@ def time_cb(update, context):
             substate = get_user(user_id)[7]
             if substate:
                 update_user('step', "'enter_time'", user_id)
-                bot.send_message(user_id, msg_19, reply_markup=ForceReply())
+                bot.send_message(user_id, msg_20, reply_markup=ForceReply())
                 update_user('latest', "'now()'::TIMESTAMPTZ", user_id)
                 query.answer()
                 return TIME_ENTERED
             else:
                 update_user('step', "'time'", user_id)
                 markup = CREATOR_MARKUP if user_id == CREATOR_ID else DEFAULT_MARKUP
-                bot.send_message(user_id, msg_20, reply_markup=markup)
+                bot.send_message(user_id, msg_21, reply_markup=markup)
                 update_user('latest', "'now()'::TIMESTAMPTZ", user_id)
                 query.answer()
         else:
@@ -106,7 +106,7 @@ def enter_time(update, context):
         update_user('timesetting', f"'{txt.zfill(5) if len(txt) == 4 else txt}'", user_id)
         timesetting = get_user(user_id)[8]
         clock_emoji = time_emoji(timesetting)
-        msg = msg_25.format(a=timesetting, b=clock_emoji)
+        msg = msg_26.format(a=timesetting, b=clock_emoji)
         if get_table(user_id):
             switched_lst = get_switched(user_id, True)
             prompted_lst = get_prompted(user_id)
@@ -123,7 +123,7 @@ def enter_time(update, context):
                         for userid in crossed_lst:
                             update_people(user_id, 'ignored', True, userid)
                         mentions = mention_layout(user_id, crossed_lst)[0]
-                        msg = msg_24.format(a=mentions, b=timesetting)
+                        msg = msg_25.format(a=mentions, b=timesetting)
                         bot.send_message(user_id, msg, reply_markup=OPTIONS_MARKUP)
                         update_user('latest', "'now()'::TIMESTAMPTZ", user_id)
                         return TIME_REPEATED
@@ -139,7 +139,7 @@ def enter_time(update, context):
         bot.send_message(user_id, msg, reply_markup=markup)
         update_user('latest', "'now()'::TIMESTAMPTZ", user_id)
     else:
-        bot.send_message(user_id, msg_8, reply_markup=ForceReply())
+        bot.send_message(user_id, msg_9, reply_markup=ForceReply())
         update_user('latest', "'now()'::TIMESTAMPTZ", user_id)
         return TIME_ENTERED
     return END
@@ -177,7 +177,7 @@ def repeat_time(update, context):
     elif txt.lower() in ['да', 'нет']:
         timesetting = get_user(user_id)[8]
         clock_emoji = time_emoji(timesetting)
-        msg = msg_25.format(a=timesetting, b=clock_emoji)
+        msg = msg_26.format(a=timesetting, b=clock_emoji)
         if get_table(user_id):
             switched_lst = get_switched(user_id, True)
             prompted_lst = get_prompted(user_id)
@@ -211,7 +211,7 @@ def repeat_time(update, context):
         bot.send_message(user_id, msg, reply_markup=markup)
         update_user('latest', "'now()'::TIMESTAMPTZ", user_id)
     else:
-        bot.send_message(user_id, msg_6, reply_markup=OPTIONS_MARKUP)
+        bot.send_message(user_id, msg_7, reply_markup=OPTIONS_MARKUP)
         update_user('latest', "'now()'::TIMESTAMPTZ", user_id)
         return TIME_REPEATED
     return END

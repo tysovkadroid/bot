@@ -5,7 +5,7 @@ from telegram.constants import MAX_ANSWER_CALLBACK_QUERY_TEXT_LENGTH
 from telegram.error import TelegramError
 
 from bot.config import LOGGER, DEFAULT_MARKUP, END, CREATOR_ID, CREATOR_MARKUP
-from bot.msgs import msg_11, msg_12, msg_13, msg_26, msg_27, msg_28
+from bot.msgs import msg_12, msg_13, msg_14, msg_27, msg_28, msg_29
 from bot.sql.get import get_users, get_user, get_table, get_people, get_verified, get_switched
 from bot.sql.update import update_user, update_switchstate, update_global_switchstate
 from bot.tools.chat_check import chat_check
@@ -33,12 +33,12 @@ def people_birthdays(user_id):
             if date_today != birthday.strftime('%d.%m'):
                 birthday_time = time_left(date_now, birthday)
                 if birthday_time:
-                    msg = msg_11.format(a=username, b='будет праздновать', c=birthday_time)
+                    msg = msg_12.format(a=username, b='будет праздновать', c=birthday_time)
                 else:
-                    msg = msg_13.format(a=username, b=word_form('праздновал', gender))
+                    msg = msg_14.format(a=username, b=word_form('праздновал', gender))
                     birthday = birthday.replace(year=current_year + 1)
             else:
-                msg = msg_12.format(a=username)
+                msg = msg_13.format(a=username)
                 birthday = birthday.replace(year=current_year + 1)
             closest.update({str(userid): [birthday, username]})
             msgs.update({str(userid): msg})
@@ -103,12 +103,12 @@ def people_msg(update, context):
         update_user('step', 'NULL', user_id)
         update_user('page', "'s_0'", user_id)
         if get_people(user_id):
-            bot.send_message(user_id, msg_27, reply_markup=people_markup(user_id, 's', 0))
+            bot.send_message(user_id, msg_28, reply_markup=people_markup(user_id, 's', 0))
         else:
-            bot.send_message(user_id, msg_28, reply_markup=markup)
+            bot.send_message(user_id, msg_29, reply_markup=markup)
     else:
         update_user('step', "'people'", user_id)
-        bot.send_message(user_id, msg_26, reply_markup=markup)
+        bot.send_message(user_id, msg_27, reply_markup=markup)
     update_user('latest', "'now()'::TIMESTAMPTZ", user_id)
     return END
 
@@ -177,10 +177,10 @@ def people_cb(update, context):
                             closest_lst.append(date)
                     birthday_time = time_left(date_now, birthday)
                     line = 'будет' if len(closest_lst) == 1 else 'будут' + ' праздновать'
-                    msg_len = len(msg_11.format(a='', b=line, c=birthday_time))
+                    msg_len = len(msg_12.format(a='', b=line, c=birthday_time))
                     usernames = list_join(sorted([x[1] for x in closest_lst]),
                                           MAX_ANSWER_CALLBACK_QUERY_TEXT_LENGTH - msg_len)
-                    msg = msg_11.format(a=usernames, b=line, c=birthday_time)
+                    msg = msg_12.format(a=usernames, b=line, c=birthday_time)
                     update_user('latest', "'now()'::TIMESTAMPTZ", user_id)
                     query.answer(text=msg, show_alert=True)
                 else:
@@ -197,12 +197,12 @@ def people_cb(update, context):
         else:
             update_user('step', "'people'", user_id)
             markup = CREATOR_MARKUP if user_id == CREATOR_ID else DEFAULT_MARKUP
-            query.bot.send_message(user_id, msg_26, reply_markup=markup)
+            query.bot.send_message(user_id, msg_27, reply_markup=markup)
             update_user('latest', "'now()'::TIMESTAMPTZ", user_id)
             query.answer()
     else:
         query.edit_message_reply_markup(None)
-        query.edit_message_text(msg_28)
+        query.edit_message_text(msg_29)
     return END
 
 
@@ -214,9 +214,9 @@ def people_refresh(context):
         try:
             if get_table(userid):
                 markup = people_markup(userid, 's', 0)
-                bot.send_message(userid, msg_27, reply_markup=markup, disable_notification=True)
+                bot.send_message(userid, msg_28, reply_markup=markup, disable_notification=True)
             else:
                 markup = CREATOR_MARKUP if userid == CREATOR_ID else DEFAULT_MARKUP
-                bot.send_message(userid, msg_28, reply_markup=markup, disable_notification=True)
+                bot.send_message(userid, msg_29, reply_markup=markup, disable_notification=True)
         except (Exception, TelegramError) as error:
             LOGGER.info(error)

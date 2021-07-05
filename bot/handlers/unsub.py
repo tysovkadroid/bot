@@ -1,5 +1,5 @@
 from bot.config import DEFAULT_MARKUP, END, CREATOR_MARKUP, CREATOR_ID
-from bot.msgs import msg_17, msg_18
+from bot.msgs import msg_18, msg_19
 from bot.sql.get import get_user, get_verified
 from bot.sql.update import update_user, update_people, update_global_switchstate
 from bot.tools.chat_check import chat_check
@@ -24,10 +24,10 @@ def unsub_msg(update, context):
         if verified_lst:
             for userid in verified_lst:
                 update_people(user_id, 'ignored', False, userid)
-        msg = msg_17.format(a=word)
+        msg = msg_18.format(a=word)
         bot.send_message(user_id, msg, reply_markup=markup)
     else:
-        msg = msg_18.format(a=word)
+        msg = msg_19.format(a=word)
         bot.send_message(user_id, msg, reply_markup=markup)
     update_user('latest', "'now()'::TIMESTAMPTZ", user_id)
     return END

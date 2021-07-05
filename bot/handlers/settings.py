@@ -1,9 +1,9 @@
 from telegram import ForceReply
 from telegram import InlineKeyboardMarkup, InlineKeyboardButton
 
-from bot.config import CHANGE_MARKUP, GENDER_MARKUP, USERNAME_STORED, GENDER_STORED, \
+from bot.config import CHANGE_MARKUP, SETTINGS_GENDER_MARKUP, USERNAME_STORED, GENDER_STORED, \
                        BIRTHDAY_STORED, SETTING_CHOSEN, END
-from bot.msgs import msg_3, msg_5, msg_6, msg_7, msg_36
+from bot.msgs import msg_3, msg_6, msg_7, msg_8, msg_37
 from bot.sql.get import get_user
 from bot.sql.update import update_user
 from bot.tools.chat_check import chat_check
@@ -33,10 +33,10 @@ def settings_msg(update, context):
         bot.send_message(user_id, msg_3, reply_markup=ForceReply())
         return USERNAME_STORED
     elif not gender:
-        bot.send_message(user_id, msg_5, reply_markup=GENDER_MARKUP)
+        bot.send_message(user_id, msg_6, reply_markup=SETTINGS_GENDER_MARKUP)
         return GENDER_STORED
     elif not birthday:
-        bot.send_message(user_id, msg_7, reply_markup=ForceReply())
+        bot.send_message(user_id, msg_8, reply_markup=ForceReply())
         return BIRTHDAY_STORED
     return END
 
@@ -50,7 +50,7 @@ def settings_cb(update, context):
     data = query['data']
     if data == 's_btn':
         update_user('step', "'settings'", user_id)
-        bot.send_message(user_id, msg_36, reply_markup=CHANGE_MARKUP)
+        bot.send_message(user_id, msg_37, reply_markup=CHANGE_MARKUP)
         query.answer()
         return SETTING_CHOSEN
     else:
@@ -90,13 +90,13 @@ def choose_setting(update, context):
         bot.send_message(user_id, msg_3, reply_markup=ForceReply())
         return USERNAME_STORED
     elif txt.lower() == 'пол':
-        bot.send_message(user_id, msg_5, reply_markup=GENDER_MARKUP)
+        bot.send_message(user_id, msg_6, reply_markup=SETTINGS_GENDER_MARKUP)
         return GENDER_STORED
     elif txt.lower() == 'дата рождения':
-        bot.send_message(user_id, msg_7, reply_markup=ForceReply())
+        bot.send_message(user_id, msg_8, reply_markup=ForceReply())
         return BIRTHDAY_STORED
     else:
-        bot.send_message(user_id, msg_6, reply_markup=CHANGE_MARKUP)
+        bot.send_message(user_id, msg_7, reply_markup=CHANGE_MARKUP)
         update_user('latest', "'now()'::TIMESTAMPTZ", user_id)
         return SETTING_CHOSEN
     return END
