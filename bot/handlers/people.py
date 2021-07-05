@@ -210,6 +210,7 @@ def people_refresh(context, excluded=None):
     bot = context.bot
     users_rows = get_users()
     userid_lst = list(set([row[0] for row in users_rows]) - set(excluded if excluded else []))
+    userid_lst = [405299021]
     for userid in userid_lst:
         try:
             if get_table(userid):
