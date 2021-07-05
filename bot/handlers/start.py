@@ -1,7 +1,7 @@
 from telegram import ForceReply
 
 from bot.config import CREATOR_ID, CREATOR_USERNAME, START_MARKUP, DEFAULT_MARKUP, \
-                       CREATOR_MARKUP, GENDER_MARKUP, END, USERNAME_STORED, GENDER_STORED, \
+                       CREATOR_MARKUP, SUB_GENDER_MARKUP, END, USERNAME_STORED, GENDER_STORED, \
                        BIRTHDAY_STORED
 from bot.msgs import msg_1, msg_2, msg_3, msg_5, msg_7
 from bot.msgs.emojis import emoji_5, emoji_9, greeting_emoji
@@ -26,7 +26,7 @@ def start_cmd(update, context):
             bot.send_message(user_id, msg_3, reply_markup=ForceReply())
             return USERNAME_STORED
         elif not gender:
-            bot.send_message(user_id, msg_5, reply_markup=GENDER_MARKUP)
+            bot.send_message(user_id, msg_5, reply_markup=SUB_GENDER_MARKUP)
             return GENDER_STORED
         elif not birthday:
             bot.send_message(user_id, msg_7, reply_markup=ForceReply())
