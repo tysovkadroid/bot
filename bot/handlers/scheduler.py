@@ -16,7 +16,6 @@ from bot.tools.word_form import word_form
 
 
 def mention_layout(user_id, dsr_lst):
-    users_rows = get_users()
     birthday_rows = get_birthdays(TIMEZONE, user_id)
     mentions, line, declension = [], None, None
     mention_lst = []

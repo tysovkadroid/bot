@@ -5,6 +5,7 @@ from bot.msgs import msg_39, msg_38, msg_40, msg_41
 from bot.sql.get import get_holidays
 from bot.sql.insert import insert_holiday
 from bot.sql.update import update_holidays
+from bot.sql.update import update_user
 from bot.tools.chat_check import chat_check
 from bot.tools.datetime_check import datetime_check
 from bot.tools.string_check import string_check
