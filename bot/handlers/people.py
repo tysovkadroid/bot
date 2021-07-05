@@ -209,12 +209,7 @@ def people_cb(update, context):
 def people_refresh(context, excluded=None):
     bot = context.bot
     users_rows = get_users()
-    print(users_rows)
-    print(excluded)
-    print(type(users_rows))
-    print(type(excluded))
     userid_lst = list(set([row[0] for row in users_rows]) - set(excluded if excluded else []))
-    print(userid_lst)
     for userid in userid_lst:
         try:
             if get_table(userid):

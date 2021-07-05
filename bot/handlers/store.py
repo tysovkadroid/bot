@@ -51,7 +51,7 @@ def store_username(update, context):
             elif step == 'settings':
                 settings_msg(update, context)
             # TODO: check whether works for both (sub, settings) cases
-            people_refresh(context, user_id)
+            people_refresh(context, [user_id])
     else:
         bot.send_message(user_id, msg_4, reply_markup=ForceReply())
         update_user('latest', "'now()'::TIMESTAMPTZ", user_id)
@@ -89,7 +89,7 @@ def store_gender(update, context):
             elif step == 'settings':
                 settings_msg(update, context)
             # TODO: check whether works for both (sub, settings) cases
-            people_refresh(context, user_id)
+            people_refresh(context, [user_id])
     else:
         if step == 'sub':
             markup = SUB_GENDER_MARKUP
@@ -135,7 +135,7 @@ def store_birthday(update, context):
             elif step == 'settings':
                 settings_msg(update, context)
             # TODO: check whether works for both (sub, settings) cases
-            people_refresh(context, user_id)
+            people_refresh(context, [user_id])
     else:
         bot.send_message(user_id, msg_9, reply_markup=ForceReply())
         update_user('latest', "'now()'::TIMESTAMPTZ", user_id)
