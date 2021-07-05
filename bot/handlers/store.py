@@ -130,6 +130,7 @@ def store_birthday(update, context):
             update_user('latest', "'now()'::TIMESTAMPTZ", user_id)
             return GENDER_STORED
         else:
+            print('here')
             bot.send_message(user_id, msg, reply_markup=None)
             if step == 'sub':
                 sub_msg(update, context)
