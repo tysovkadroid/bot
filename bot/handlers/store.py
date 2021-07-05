@@ -12,6 +12,7 @@ from bot.sql.get import get_users, get_user
 from bot.sql.update import update_user
 from bot.tools.chat_check import chat_check
 from bot.tools.datetime_check import datetime_check
+from bot.tools.string_escape import string_escape
 
 
 @chat_check('registered')
@@ -117,7 +118,7 @@ def store_birthday(update, context):
         birthday = f"{birthday_date.strftime('%Y-%m-%d')}"
         update_user('birthday', f"'{birthday}'", user_id)
         username, gender = db_user[1], db_user[2]
-        msg = msg_10.format(a=txt)
+        msg = msg_10.format(a=string_escape(txt, '.'))
         if not username:
             msg += '\n' + msg_3
             bot.send_message(user_id, msg, reply_markup=ForceReply())
@@ -130,8 +131,11 @@ def store_birthday(update, context):
             update_user('latest', "'now()'::TIMESTAMPTZ", user_id)
             return GENDER_STORED
         else:
-            print('here')
             bot.send_message(user_id, msg, reply_markup=None)
+            if step == 'sub':
+                sub_msg(update, context)
+            elif step == 'settings':
+                settings_msg(update, context)
             people_refresh(context, [user_id])
     else:
         bot.send_message(user_id, msg_9, reply_markup=ForceReply())
