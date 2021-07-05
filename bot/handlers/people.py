@@ -217,5 +217,6 @@ def people_refresh(context, excluded=None):
             else:
                 markup = CREATOR_MARKUP if userid == CREATOR_ID else DEFAULT_MARKUP
                 bot.send_message(userid, msg_29, reply_markup=markup, disable_notification=True)
+            update_user('latest', "'now()'::TIMESTAMPTZ", user_id)
         except (Exception, TelegramError) as error:
             LOGGER.info(error)
