@@ -132,10 +132,6 @@ def store_birthday(update, context):
         else:
             print('here')
             bot.send_message(user_id, msg, reply_markup=None)
-            if step == 'sub':
-                sub_msg(update, context)
-            elif step == 'settings':
-                settings_msg(update, context)
             people_refresh(context, [user_id])
     else:
         bot.send_message(user_id, msg_9, reply_markup=ForceReply())
