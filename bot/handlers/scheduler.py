@@ -42,9 +42,9 @@ def group_msgs(context):
     bot = context.bot
     now = datetime.now(TIMEZONE)
     if now.strftime('%H:%M') == DEFAULT_TIMESETTING:
-        holiday_rows = get_holidays()
-        if holiday_rows:
-            data, latest = holiday_rows
+        holidays_rows = get_holidays()
+        if holidays_rows:
+            data, latest = holidays_rows
             for date, txt in list(data.items()):
                 date_today = now.strftime('%d.%m')
                 current_year = int(now.strftime('%Y'))

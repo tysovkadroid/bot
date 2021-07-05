@@ -51,7 +51,7 @@ def cancel_msg(update, context):
         else:
             update_user('step', 'NULL', user_id)
             bot.send_message(user_id, msg_34, reply_markup=markup)
-    elif step == 'holiday':
+    elif step in ['settings', 'holidays']:
         update_user('step', 'NULL', user_id)
         bot.send_message(user_id, msg_30, reply_markup=markup)
     else:

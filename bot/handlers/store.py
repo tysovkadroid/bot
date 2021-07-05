@@ -25,10 +25,7 @@ def store_username(update, context):
     step = db_user[9]
     users_rows = get_users()
     username_lst = [row[1] for row in users_rows] if users_rows else []
-    if step == 'settings' and txt == 'отмена':
-        import bot.handlers.cancel as cancel
-        cancel.cancel_msg(update, context)
-    elif txt in username_lst:
+    if txt in username_lst:
         bot.send_message(user_id, msg_5, reply_markup=ForceReply())
         return USERNAME_STORED
     elif all([x.isalpha() for x in txt.split(' ')]) and txt:
@@ -69,10 +66,7 @@ def store_gender(update, context):
     txt = update.message.text
     db_user = get_user(user_id)
     step = db_user[9]
-    if step == 'settings' and txt == 'отмена':
-        import bot.handlers.cancel as cancel
-        cancel.cancel_msg(update, context)
-    elif txt.lower() in ['мужской', 'женский']:
+    if txt.lower() in ['мужской', 'женский']:
         gender = 'm' if txt.lower() == 'мужской' else 'f'
         update_user('gender', f"'{gender}'", user_id)
         username, birthday = db_user[1], db_user[3]
@@ -110,10 +104,7 @@ def store_birthday(update, context):
     txt = update.message.text
     db_user = get_user(user_id)
     step = db_user[9]
-    if step == 'settings' and txt == 'отмена':
-        import bot.handlers.cancel as cancel
-        cancel.cancel_msg(update, context)
-    elif datetime_check(txt, '%d.%m.%Y'):
+    if datetime_check(txt, '%d.%m.%Y'):
         birthday_date = datetime.strptime(txt, '%d.%m.%Y')
         birthday = f"{birthday_date.strftime('%Y-%m-%d')}"
         update_user('birthday', f"'{birthday}'", user_id)

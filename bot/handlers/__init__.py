@@ -38,7 +38,7 @@ def register_handlers(dispatcher):
         Filters.regex(re.compile(r'^время$', re.IGNORECASE)), time_msg)
     settings_message_handler = MessageHandler(
         Filters.regex(re.compile(r'^настройки$', re.IGNORECASE)), settings_msg)
-    holiday_message_handler = MessageHandler(
+    holidays_message_handler = MessageHandler(
         Filters.regex(re.compile(r'^праздники$', re.IGNORECASE)) &
         Filters.chat(CREATOR_ID), holidays_msg)
     cancel_message_handler = MessageHandler(
@@ -79,8 +79,8 @@ def register_handlers(dispatcher):
         fallbacks=[MessageHandler(Filters.text, exit_conversation)],
         allow_reentry=True,
         name='SettingsConversationHandler')
-    holiday_conversation_handler = ConversationHandler(
-        entry_points=[holiday_message_handler, holidays_cb_handler],
+    holidays_conversation_handler = ConversationHandler(
+        entry_points=[holidays_message_handler, holidays_cb_handler],
         states={HOLIDAY_ADDED: [MessageHandler(Filters.text, process_holiday)]},
         fallbacks=[MessageHandler(Filters.text, exit_conversation)],
         allow_reentry=True,
@@ -94,7 +94,7 @@ def register_handlers(dispatcher):
     dispatcher.add_handler(people_cb_handler)
     dispatcher.add_handler(cancel_message_handler)
     dispatcher.add_handler(settings_conversation_handler)
-    dispatcher.add_handler(holiday_conversation_handler)
+    dispatcher.add_handler(holidays_conversation_handler)
     dispatcher.add_handler(new_message_handler)
     dispatcher.add_handler(left_message_handler)
     dispatcher.add_error_handler(error_cb)

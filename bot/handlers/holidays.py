@@ -11,7 +11,7 @@ from bot.tools.string_check import string_check
 from bot.tools.string_escape import string_escape
 
 
-def holiday_layout(data):
+def holidays_layout(data):
     holidays = []
     for date, txt in list(data.items()):
         chars = '[]()>#+-=|{}.!'
@@ -28,14 +28,16 @@ def holidays_msg(update, context):
     bot = context.bot
     user = update.effective_user
     user_id = user['id']
-    holiday_rows = get_holidays()
-    if any(holiday_rows):
-        msg = holiday_layout(holiday_rows[0])
+    update_user('step', 'NULL', user_id)
+    holidays_rows = get_holidays()
+    if any(holidays_rows):
+        msg = holidays_layout(holidays_rows[0])
     else:
         msg = msg_39
     button = [[InlineKeyboardButton(text='изменить', callback_data='h_btn')]]
     markup = InlineKeyboardMarkup(button)
     bot.send_message(user_id, msg, reply_markup=markup)
+    update_user('latest', "'now()'::TIMESTAMPTZ", user_id)
     return END
 
 
@@ -47,6 +49,7 @@ def holidays_cb(update, context):
     query = update.callback_query
     data = query['data']
     if data == 'h_btn':
+        update_user('step', "'holidays'", user_id)
         bot.send_message(user_id, msg_38)
         query.answer()
         return HOLIDAY_ADDED
@@ -60,7 +63,7 @@ def process_holiday(update, context):
     user = update.effective_user
     user_id = user['id']
     txt = update.message.text
-    holiday_rows = get_holidays()
+    holidays_rows = get_holidays()
     values = txt.split(', ', 1)
     button = [[InlineKeyboardButton(text='повторить попытку', callback_data='h_btn')]]
     markup = InlineKeyboardMarkup(button)
@@ -105,7 +108,7 @@ def process_holiday(update, context):
                              reply_markup=markup)
     else:
         if datetime_check(txt, '%d.%m'):
-            data = holiday_rows[0] if any(holiday_rows) else {}
+            data = holidays_rows[0] if any(holidays_rows) else {}
             if txt in list(data.keys()):
                 data_subquery = f"""data - '{txt}'"""
                 update_holidays('data', data_subquery)
