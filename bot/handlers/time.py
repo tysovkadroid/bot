@@ -7,7 +7,7 @@ from bot.config import TIMEZONE, DEFAULT_MARKUP, OPTIONS_MARKUP, TIME_ENTERED, T
 from bot.handlers.scheduler import mention_layout
 from bot.msgs import msg_7, msg_9, msg_20, msg_21, msg_22, msg_23, msg_24, msg_25, msg_26
 from bot.msgs.emojis import emoji_10, emoji_13, emoji_21
-from bot.sql.get import get_user, get_table, get_birthday, get_switched, get_prompted
+from bot.sql.get import get_user, get_table, get_birthdays, get_switched, get_prompted
 from bot.sql.update import update_user, update_people
 from bot.tools.chat_check import chat_check
 from bot.tools.datetime_check import datetime_check
@@ -117,7 +117,7 @@ def enter_time(update, context):
                     now.replace(second=now.second+1, microsecond=0),
                     now.replace(hour=int(timesetting[:2]), minute=int(timesetting[-2:]),
                                 second=0, microsecond=0))
-                if get_birthday(TIMEZONE, user_id) and timesetting_time:
+                if get_birthdays(TIMEZONE, user_id) and timesetting_time:
                     if crossed_lst:
                         update_user('step', "'repeat_time'", user_id)
                         for userid in crossed_lst:

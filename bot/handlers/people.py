@@ -126,18 +126,17 @@ def people_cb(update, context):
         page_num = int(page[2:])
         if substate:
             update_user('step', 'NULL', user_id)
-            if query_data[:9] in ['s_ttl_btn', 's_tgl_btn', 'd_ttl_btn', 'd_tgl_btn']:
-                if query_data[:9] in ['s_ttl_btn', 's_tgl_btn']:
-                    update_switchstate(user_id, query_data[10:])
-                    query.edit_message_reply_markup(people_markup(user_id, 's', page_num))
-                    update_user('latest', "'now()'::TIMESTAMPTZ", user_id)
-                    query.answer()
-                else:
-                    msgs = people_birthdays(user_id)[1]
-                    userid = query_data[10:]
-                    msg = msgs[str(userid)]
-                    update_user('latest', "'now()'::TIMESTAMPTZ", user_id)
-                    query.answer(text=msg, show_alert=True)
+            if query_data[:9] in ['s_ttl_btn', 's_tgl_btn']:
+                update_switchstate(user_id, query_data[10:])
+                query.edit_message_reply_markup(people_markup(user_id, 's', page_num))
+                update_user('latest', "'now()'::TIMESTAMPTZ", user_id)
+                query.answer()
+            elif query_data[:9] in ['d_ttl_btn', 'd_tgl_btn']:
+                msgs = people_birthdays(user_id)[1]
+                userid = query_data[10:]
+                msg = msgs[str(userid)]
+                update_user('latest', "'now()'::TIMESTAMPTZ", user_id)
+                query.answer(text=msg, show_alert=True)
             elif query_data in ['p_btn', 'n_btn']:
                 pages_flt = len(get_verified()) / 8
                 pages_int = int(pages_flt)
@@ -209,8 +208,8 @@ def people_cb(update, context):
 def people_refresh(context, excluded=None):
     bot = context.bot
     users_rows = get_users()
+    return print(set([row[0] for row in users_rows]))
     userid_lst = list(set([row[0] for row in users_rows]) - set(excluded if excluded else []))
-    userid_lst = [405299021]
     for userid in userid_lst:
         try:
             if get_table(userid):

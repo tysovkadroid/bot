@@ -7,7 +7,7 @@ from bot.config import LOGGER, TIMEZONE, DEFAULT_TIMESETTING, TYSOVKA_ID, DEFAUL
                        CREATOR_MARKUP, CREATOR_ID
 from bot.msgs import msg_2, msg_11, msg_15
 from bot.msgs.emojis import greeting_emoji, birthday_emoji
-from bot.sql.get import get_users, get_table, get_birthday, get_verified, get_switched, \
+from bot.sql.get import get_users, get_table, get_birthdays, get_verified, get_switched, \
                         get_prompted, get_ignored, get_holidays
 from bot.sql.update import update_user, update_people, update_years, update_holidays
 from bot.tools.list_join import list_join
@@ -17,25 +17,24 @@ from bot.tools.word_form import word_form
 
 def mention_layout(user_id, dsr_lst):
     users_rows = get_users()
-    birthday_rows = get_birthday(TIMEZONE, user_id)
+    birthday_rows = get_birthdays(TIMEZONE, user_id)
     mentions, line, declension = [], None, None
-    if users_rows and birthday_rows:
-        mention_lst = []
-        for row in birthday_rows:
-            userid = row[0]
-            if userid in dsr_lst:
-                username = row[1]
-                mention = mention_markdown(userid, username, version=2)
-                mention_lst.append(mention)
-                update_years(user_id, userid)
-        if len(birthday_rows) == 1:
-            gender = birthday_rows[0][2]
-            declension = word_form('его', gender)
-            line = 'празднует свой день рождения'
-        else:
-            declension = 'их'
-            line = 'празднуют свои дни рождения'
-        mentions = list_join(mention_lst)
+    mention_lst = []
+    for row in birthday_rows:
+        userid = row[0]
+        if userid in dsr_lst:
+            username = row[1]
+            mention = mention_markdown(userid, username, version=2)
+            mention_lst.append(mention)
+            update_years(user_id, userid)
+    if len(birthday_rows) == 1:
+        gender = birthday_rows[0][2]
+        declension = word_form('его', gender)
+        line = 'празднует свой день рождения'
+    else:
+        declension = 'их'
+        line = 'празднуют свои дни рождения'
+    mentions = list_join(mention_lst)
     return mentions, line, declension
 
 
@@ -87,7 +86,7 @@ def scheduler(context):
                     now = datetime.now(TIMEZONE)
                     age_subquery = f"date_part('years', age(current_date, " \
                                    f"(SELECT birthday FROM users WHERE userid = {user_id})))"
-                    birthdays = get_birthday(TIMEZONE, user_id)
+                    birthdays = get_birthdays(TIMEZONE, user_id)
                     if birthdays:
                         timesetting = row[8]
                         birthday_lst = [x[0] for x in birthdays]

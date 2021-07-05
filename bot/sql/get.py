@@ -84,7 +84,6 @@ def get_people(user_id):
                 SELECT userid
                 FROM users
                 WHERE userid != {0}
-                AND verified = True
             )
             ON CONFLICT (userid) DO NOTHING;
             DELETE FROM people_{0}
@@ -92,7 +91,6 @@ def get_people(user_id):
                 SELECT *
                 FROM users
                 WHERE users.userid = people_{0}.userid
-                AND verified = True
             );
             SELECT *
             FROM people_{0}
@@ -102,14 +100,13 @@ def get_people(user_id):
     return out if out else []
 
 
-def get_birthday(timezone, user_id):
+def get_birthdays(timezone, user_id):
     create_users()
     query = """
             SELECT userid, username, gender
             FROM users
             WHERE to_char(current_timestamp at time zone {0}, 'DD.MM') =
                   to_char(birthday, 'DD.MM')
-            AND verified = True
             AND userid != {1}
             ORDER BY userid;
             """

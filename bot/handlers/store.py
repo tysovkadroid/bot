@@ -20,22 +20,24 @@ def store_username(update, context):
     user = update.effective_user
     user_id = user['id']
     txt = update.message.text
+    db_user = get_user(user_id)
+    step = db_user[9]
     users_rows = get_users()
     username_lst = [row[1] for row in users_rows] if users_rows else []
-    if txt in username_lst:
+    if step == 'settings' and txt == 'отмена':
+        import bot.handlers.cancel as cancel
+        cancel.cancel_msg(update, context)
+    elif txt in username_lst:
         bot.send_message(user_id, msg_5, reply_markup=ForceReply())
         return USERNAME_STORED
     elif all([x.isalpha() for x in txt.split(' ')]) and txt:
         update_user('username', f"'{txt.title()}'", user_id)
         db_user = get_user(user_id)
-        gender, birthday, step = db_user[2], db_user[3], db_user[9]
+        gender, birthday = db_user[2], db_user[3]
         msg = msg_10.format(a=txt.title())
         if not gender:
             msg += '\n' + msg_6
-            if step == 'sub':
-                markup = SUB_GENDER_MARKUP
-            elif step == 'settings':
-                markup = SETTINGS_GENDER_MARKUP
+            markup = SUB_GENDER_MARKUP if step == 'sub' else SETTINGS_GENDER_MARKUP
             bot.send_message(user_id, msg, reply_markup=markup)
             update_user('latest', "'now()'::TIMESTAMPTZ", user_id)
             return GENDER_STORED
@@ -50,7 +52,6 @@ def store_username(update, context):
                 sub_msg(update, context)
             elif step == 'settings':
                 settings_msg(update, context)
-            # TODO: check whether works for both (sub, settings) cases
             people_refresh(context, [user_id])
     else:
         bot.send_message(user_id, msg_4, reply_markup=ForceReply())
@@ -67,7 +68,10 @@ def store_gender(update, context):
     txt = update.message.text
     db_user = get_user(user_id)
     step = db_user[9]
-    if txt.lower() in ['мужской', 'женский']:
+    if step == 'settings' and txt == 'отмена':
+        import bot.handlers.cancel as cancel
+        cancel.cancel_msg(update, context)
+    elif txt.lower() in ['мужской', 'женский']:
         gender = 'm' if txt.lower() == 'мужской' else 'f'
         update_user('gender', f"'{gender}'", user_id)
         username, birthday = db_user[1], db_user[3]
@@ -88,13 +92,9 @@ def store_gender(update, context):
                 sub_msg(update, context)
             elif step == 'settings':
                 settings_msg(update, context)
-            # TODO: check whether works for both (sub, settings) cases
             people_refresh(context, [user_id])
     else:
-        if step == 'sub':
-            markup = SUB_GENDER_MARKUP
-        elif step == 'settings':
-            markup = SETTINGS_GENDER_MARKUP
+        markup = SUB_GENDER_MARKUP if step == 'sub' else SETTINGS_GENDER_MARKUP
         bot.send_message(user_id, msg_7, reply_markup=markup)
         update_user('latest', "'now()'::TIMESTAMPTZ", user_id)
         return GENDER_STORED
@@ -107,12 +107,16 @@ def store_birthday(update, context):
     user = update.effective_user
     user_id = user['id']
     txt = update.message.text
-    if datetime_check(txt, '%d.%m.%Y'):
+    db_user = get_user(user_id)
+    step = db_user[9]
+    if step == 'settings' and txt == 'отмена':
+        import bot.handlers.cancel as cancel
+        cancel.cancel_msg(update, context)
+    elif datetime_check(txt, '%d.%m.%Y'):
         birthday_date = datetime.strptime(txt, '%d.%m.%Y')
         birthday = f"{birthday_date.strftime('%Y-%m-%d')}"
         update_user('birthday', f"'{birthday}'", user_id)
-        db_user = get_user(user_id)
-        username, gender, step = db_user[1], db_user[2], db_user[9]
+        username, gender = db_user[1], db_user[2]
         msg = msg_10.format(a=txt)
         if not username:
             msg += '\n' + msg_3
@@ -121,10 +125,7 @@ def store_birthday(update, context):
             return USERNAME_STORED
         elif not gender:
             msg += '\n' + msg_6
-            if step == 'sub':
-                markup = SUB_GENDER_MARKUP
-            elif step == 'settings':
-                markup = SETTINGS_GENDER_MARKUP
+            markup = SUB_GENDER_MARKUP if step == 'sub' else SETTINGS_GENDER_MARKUP
             bot.send_message(user_id, msg, reply_markup=markup)
             update_user('latest', "'now()'::TIMESTAMPTZ", user_id)
             return GENDER_STORED
@@ -134,7 +135,6 @@ def store_birthday(update, context):
                 sub_msg(update, context)
             elif step == 'settings':
                 settings_msg(update, context)
-            # TODO: check whether works for both (sub, settings) cases
             people_refresh(context, [user_id])
     else:
         bot.send_message(user_id, msg_9, reply_markup=ForceReply())
