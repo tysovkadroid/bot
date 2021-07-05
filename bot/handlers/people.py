@@ -205,7 +205,7 @@ def people_cb(update, context):
     return END
 
 
-def people_refresh(context, excluded=405299021):
+def people_refresh(context, excluded=None):
     bot = context.bot
     users_rows = get_users()
     userid_lst = list(set([row[0] for row in users_rows]) - set(excluded if excluded else []))
